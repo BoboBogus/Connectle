@@ -7,13 +7,13 @@
     <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\MovieGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\CsvParser.cpp">
+    <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\helpers\CsvParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\DatasetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\TextHelper.cpp">
+    <ClCompile Include="C:\Users\orang\OneDrive\Documents\GitHub\P2-template\src\helpers\TextHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
