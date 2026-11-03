@@ -168,5 +168,94 @@ searchResult dfs(MovieGraph& graph, string start, string end) { //dfs implementa
     return result;
 }
 
-searchResult ddfs(MovieGraph& graph, string start, string end) { //dfs implementation
+searchResult ddfs(MovieGraph& graph, string start, string end) { //ddfs implementation
+	//everything one side of search needs to now
+	struct side {
+		vector<step> stack; // next step is always on top
+		unordered_set<string> visitedA;
+		unordered_set<string> visitedM;
+		unordered_map<string, string> cameFromActor;
+		unordered_map<string, string> cameFromMovie;
+	};
+
+	//one side vistis the when they meet it puts it in meetingActor
+	bool oneStep(MovieGraph& graph, side& s1, side& s2, searchResult& result, string& meetingActor) {
+		while(s1.stack.empty() == false) {
+			step current = s1.stack.back();
+			s1.stack.pop_back();
+
+			if (s1.visitedA.count(current.actor) != 0) {
+				continue; //skip if already visited
+			}
+			s1.visitedA.insert(current.actor);
+			result.actorsVisited++;
+			s1.cameFromActor[current.actor] = current.fromActor;
+			s1.cameFromMovie[current.actor] = current.fromMovie;
+
+			if (s2.visitedA.count(current.actor) != 0) { //if the other side has visited this actor then we have found a path
+				meetingActor = current.actor;
+				return true;
+			}
+
+			for(auto x: graph.moviesOf(current.actor)) { //visits every movie of the actor
+				if (s1.visitedM.count(x) != 0) {
+					continue; //skip if already visited
+				}
+				s1.visitedM.insert(x);
+				result.moviesVisited++;
+
+				for (auto y: graph.castOf(x)) { //visits every actor in the movie
+					if (s1.visitedA.count(y) != 0) {
+						continue;
+					}
+					s1.stack.push_back(Step{y, current.actor, x});
+				}
+			}
+		}
+		return false;
+	}
+	return false;
+}
+	
+searchResult ddfs(MovieGraph& graph, string start, string end) {
+	auto startTime = chrono::steady_clock::now();
+	searchResult result;
+
+	if(graph.hasActor(start) && graph.hasActor(end)) {
+		side s1;
+		side s2;
+		s1.stack.push_back(Step{start, "", ""});
+		s2.stack.push_back(Step{end, "", ""});
+
+		string meetingActor = "";
+		bool found = false;
+
+		if (start == end) {
+			meetingActor = start;
+			met = true;
+			result.actorsVisited = 1;
+		}
+
+		//takes turning seeing if a side found the other
+		while (met == false && (s1.stack.empty() == false || s2.stack.empty() == false)) {
+			met = oneStep(graph, s1, s2, result, meetingActor);
+			if (met == false) {
+				met = oneStep(graph, s2, s1, result, meetingActor);
+			}
+		}
+
+		if (met == true) { // builds path then returns it
+			result.found = true;
+			buildPath(start, meetingActor, s1.cameFromActor, s1.cameFromMovie, result.actors, result.movies);
+			
+			string current = meetingActor;
+			while (current != end) {
+				result.movies.push_back(s2.cameFromMovie[current]);
+				current = s2.cameFromActor[current];
+				result.actors.push_back(current);
+			}
+		}
+	}
+	result.time = time(startTime);
+	return result;
 }
