@@ -13,17 +13,17 @@ using namespace std;
 // what every search algorithm will return after being called
 struct searchResult{
     bool found = false; // if a path was found - default to no
-    vector<string> actors; // the actors in the path
-    vector<string> movies; // the movies in the path
+    vector<std::string> actors; // the actors in the path
+    vector<std::string> movies; // the movies in the path
     int actorsVisited = 0; // how many actors were visited
     int moviesVisited = 0; // how many movies were visited
     double time = 0; // how long the search took
 
     int moviesAway(); // movies in chain
-    int nodes() // nodes visited
-}
+    int nodes(); // nodes visited
+};
 
 
-searchResult bfs(MovieGraph& graph, string start, string end); // breadth first search
-searchResult dfs(MovieGraph& graph, string start, string end); // depth first search
-searchResult ddfs(MovieGraph& graph, string start, string end); // double depth first
+searchResult bfs(MovieGraph& graph, std::string start, std::string end); // breadth first search
+searchResult dfs(MovieGraph& graph, std::string start, std::string end); // depth first search
+searchResult ddfs(MovieGraph& graph, std::string start, std::string end); // double depth first
