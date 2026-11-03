@@ -1,23 +1,29 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+// header fiile for searches - Alexander Schunko
+// contains 3 search algorithms
+//bfs() - finds shortest path but takes some time
+//dfs() - finds path fast but not always shortest
+//ddfs() - dfs but starts from both ends so runs faster
 
-#include "MovieGraph.h"
-
-#include <cstddef>
-#include <string>
+#pragma once
 #include <vector>
+#include <unordered_map>
+#include <string>
+using namespace std;
 
-struct SearchResult
-{
-	bool found;
-	std::vector<std::string> path;
-	std::size_t nodesVisited;
-	double milliseconds;
+// what every search algorithm will return after being called
+struct searchResult{
+    bool found = false; // if a path was found - default to no
+    vector<string> actors; // the actors in the path
+    vector<string> movies; // the movies in the path
+    int actorsVisited = 0; // how many actors were visited
+    int moviesVisited = 0; // how many movies were visited
+    double time = 0; // how long the search took
 
-	SearchResult() : found(false), nodesVisited(0), milliseconds(0.0) {}
-};
+    int moviesAway(); // movies in chain
+    int nodes() // nodes visited
+}
 
-SearchResult runBFS(const MovieGraph& graph, const std::string& startActor, const std::string& endActor);
-SearchResult runBidirectionalBFS(const MovieGraph& graph, const std::string& startActor, const std::string& endActor);
 
-#endif
+searchResult bfs(MovieGraph& graph, string start, string end); // breadth first search
+searchResult dfs(MovieGraph& graph, string start, string end); // depth first search
+searchResult ddfs(MovieGraph& graph, string start, string end); // double depth first
