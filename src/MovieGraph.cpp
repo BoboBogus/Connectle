@@ -5,7 +5,6 @@ const std::vector<std::string> MovieGraph::emptyList = {};
 void MovieGraph::addEdge(const std::string& actor, const std::string& movie) {
     if (actor.empty() || movie.empty()) return;
 
-    // Avoid duplicate entries if the CSV repeats an actor for a movie
     if (actors_.insert(actor).second || true) {
         // Check if actor already has this movie
         auto& movies = actorToMovies_[actor];

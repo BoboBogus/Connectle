@@ -25,11 +25,10 @@ public:
     const std::vector<std::string>& moviesOf(const std::string& actor) const;
     const std::vector<std::string>& castOf(const std::string& movie) const;
 
-    // Size / Utility
+    // Sizes
     size_t actorCount() const;
     size_t movieCount() const;
     std::vector<std::string> allActors() const;
     
-    // Empty fallback vector for missing lookups
     static const std::vector<std::string> emptyList;
 };
