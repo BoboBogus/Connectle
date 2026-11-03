@@ -1,7 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include "Graph.h"
+#include "MovieGraph.h"
 
 #include <cstddef>
 #include <string>
