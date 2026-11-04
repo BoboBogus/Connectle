@@ -1,4 +1,4 @@
-////Collaborated by Angel Reyes and Jayden Valera Alexander Schunko
+////made by Jayden Valera
 #pragma once
 #include <string>
 #include <vector>
