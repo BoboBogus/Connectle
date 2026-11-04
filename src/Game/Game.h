@@ -4,10 +4,10 @@
 #include <string>
 #include "MovieGraph.h"
 
-void runShortestPathMode(const MovieGraph& graph);
-void runTriviaMode(const MovieGraph& graph);
-void runLongestChainMode(const MovieGraph& graph);
+void runShortestPathMode(MovieGraph& graph);
+void runTriviaMode(MovieGraph& graph);
+void runLongestChainMode(MovieGraph& graph);
 
-void runMainMenu(const MovieGraph& graph);
+void runMainMenu(MovieGraph& graph);
 
 #endif

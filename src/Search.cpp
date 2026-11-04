@@ -9,6 +9,7 @@
 
 using namespace std;
 
+namespace search {
 // visit next actor
 struct Step {
     string actor;       // who to visit
@@ -16,7 +17,7 @@ struct Step {
     string fromMovie;
 };
 
-int searchResult::moviesAway() {
+int searchResult::moviesAway() const {
     if (found == true) {
         return (int)movies.size();
     } else {
@@ -24,7 +25,7 @@ int searchResult::moviesAway() {
     }
 }
 
-int searchResult::nodes() {
+int searchResult::nodes() const {
     return actorsVisited + moviesVisited;
 }
 
@@ -108,7 +109,7 @@ searchResult bfs(MovieGraph& graph, string start, string end) {
     }
     result.time = runTime(startTime);
     return result;
-}
+} // <--- FIXED: Added missing closing brace for bfs()
 
 searchResult dfs(MovieGraph& graph, string start, string end) {
     auto startTime = chrono::steady_clock::now();
@@ -253,3 +254,5 @@ searchResult ddfs(MovieGraph& graph, string start, string end) {
     result.time = runTime(startTime);
     return result;
 }
+
+} // namespace search

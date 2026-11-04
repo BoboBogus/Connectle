@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Search.h"
+#include "../Search.h"
 #include "TextHelper.h"
 
 #include <iostream>
@@ -8,21 +8,36 @@
 #include <unordered_set>
 #include <vector>
 
+using namespace search;
+
 namespace
 {
-    bool findActorName(const MovieGraph& graph, const std::string& typedName, std::string& actorName)
+    bool findActorName(MovieGraph& graph, const std::string& typedName, std::string& actorName)
     {
-        actorName = text::formatForDataset(text::trim(typedName));
-        return !actorName.empty() && graph.hasActor(actorName);
+        const std::string normalizedName = text::formatForDataset(text::trim(typedName));
+        if (normalizedName.empty())
+        {
+            return false;
+        }
+
+        for (const std::string& candidate : graph.allActors())
+        {
+            if (text::formatForDataset(candidate) == normalizedName)
+            {
+                actorName = candidate;
+                return true;
+            }
+        }
+        return false;
     }
 
-    bool findMovieTitle(const MovieGraph& graph, const std::string& typedTitle, std::string& movieTitle)
+    bool findMovieTitle(MovieGraph& graph, const std::string& typedTitle, std::string& movieTitle)
     {
         movieTitle = text::trim(typedTitle);
         return !movieTitle.empty() && graph.hasMovie(movieTitle);
     }
 
-    bool actorIsInMovie(const MovieGraph& graph, const std::string& actorName, const std::string& movieTitle)
+    bool actorIsInMovie(MovieGraph& graph, const std::string& actorName, const std::string& movieTitle)
     {
         const std::vector<std::string>& cast = graph.castOf(movieTitle);
         for (const std::string& actor : cast)
@@ -35,32 +50,20 @@ namespace
         return false;
     }
 
-    void printPath(const std::vector<std::string>& path)
+    void printPath(const searchResult& result)
     {
-        for (std::size_t position = 0; position < path.size(); ++position)
+        for (std::size_t position = 0; position < result.actors.size(); ++position)
         {
-            if (position % 2 == 0)
+            std::cout << text::formatForDisplay(result.actors[position]);
+            if (position < result.movies.size())
             {
-                std::cout << text::formatForDisplay(path[position]);
-            }
-            else
-            {
-                std::cout << '[' << path[position] << ']';
-            }
-            if (position + 1 < path.size())
-            {
-                std::cout << " -> ";
+                std::cout << " -> [" << result.movies[position] << "] -> ";
             }
         }
         std::cout << std::endl;
     }
 
-    std::size_t countMoviesInPath(const std::vector<std::string>& path)
-    {
-        return path.empty() ? 0 : (path.size() - 1) / 2;
-    }
-
-    bool askForActor(const MovieGraph& graph, const std::string& prompt, std::string& actorName)
+    bool askForActor(MovieGraph& graph, const std::string& prompt, std::string& actorName)
     {
         while (true)
         {
@@ -82,7 +85,7 @@ namespace
         }
     }
 
-    void printSearchResult(const std::string& algorithmName, const SearchResult& result)
+    void printSearchResult(const std::string& algorithmName, const searchResult& result)
     {
         std::cout << "\n--- " << algorithmName << " ---\n";
         if (!result.found)
@@ -91,14 +94,14 @@ namespace
         }
         else
         {
-            printPath(result.path);
-            std::cout << "Movies apart: " << countMoviesInPath(result.path) << '\n';
+            printPath(result);
+            std::cout << "Movies apart: " << result.moviesAway() << '\n';
         }
-        std::cout << "Nodes visited: " << result.nodesVisited << '\n'
-                  << "Time: " << result.milliseconds << " ms\n";
+        std::cout << "Nodes visited: " << result.nodes() << '\n'
+                  << "Time: " << result.time << " ms\n";
     }
 
-    bool pickRandomConnectedActors(const MovieGraph& graph,
+    bool pickRandomConnectedActors(MovieGraph& graph,
                                    std::string& firstActor,
                                    std::string& secondActor)
     {
@@ -121,8 +124,8 @@ namespace
                 continue;
             }
 
-            const SearchResult path = runBidirectionalBFS(graph, candidateStart, candidateEnd);
-            if (path.found && countMoviesInPath(path.path) >= 2)
+            const searchResult path = bfs(graph, candidateStart, candidateEnd);
+            if (path.found && path.moviesAway() >= 2)
             {
                 firstActor = candidateStart;
                 secondActor = candidateEnd;
@@ -133,7 +136,7 @@ namespace
     }
 }
 
-void runShortestPathMode(const MovieGraph& graph)
+void runShortestPathMode(MovieGraph& graph)
 {
     std::cout << "\n=== Shortest Movie Path Finder ===\n";
     std::string startActor;
@@ -146,8 +149,9 @@ void runShortestPathMode(const MovieGraph& graph)
 
     std::cout << "\nWhich algorithm?\n"
               << "  1. Breadth-First Search\n"
-              << "  2. Bidirectional Breadth-First Search\n"
-              << "  3. Run both and compare\n"
+              << "  2. Depth-First Search\n"
+              << "  3. Double Depth-First Search\n"
+              << "  4. Run all and compare\n"
               << "Choice: ";
     std::string choice;
     if (!std::getline(std::cin, choice))
@@ -156,21 +160,25 @@ void runShortestPathMode(const MovieGraph& graph)
     }
     choice = text::trim(choice);
 
-    if (choice == "1" || choice == "3")
+    if (choice == "1" || choice == "4")
     {
-        printSearchResult("Breadth-First Search", runBFS(graph, startActor, endActor));
+        printSearchResult("Breadth-First Search", bfs(graph, startActor, endActor));
     }
-    if (choice == "2" || choice == "3")
+    if (choice == "2" || choice == "4")
     {
-        printSearchResult("Bidirectional BFS", runBidirectionalBFS(graph, startActor, endActor));
+        printSearchResult("Depth-First Search", dfs(graph, startActor, endActor));
     }
-    if (choice != "1" && choice != "2" && choice != "3")
+    if (choice == "3" || choice == "4")
+    {
+        printSearchResult("Double Depth-First Search", ddfs(graph, startActor, endActor));
+    }
+    if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
     {
         std::cout << "That was not a valid choice.\n";
     }
 }
 
-void runTriviaMode(const MovieGraph& graph)
+void runTriviaMode(MovieGraph& graph)
 {
     std::cout << "\n=== Trivia: Connect the Actors ===\n";
     std::string startActor;
@@ -240,14 +248,14 @@ void runTriviaMode(const MovieGraph& graph)
     {
         std::cout << "The shortest path was:\n";
     }
-    const SearchResult shortest = runBidirectionalBFS(graph, startActor, targetActor);
+    const searchResult shortest = bfs(graph, startActor, targetActor);
     if (shortest.found)
     {
-        printPath(shortest.path);
+        printPath(shortest);
     }
 }
 
-void runLongestChainMode(const MovieGraph& graph)
+void runLongestChainMode(MovieGraph& graph)
 {
     std::cout << "\n=== Longest Chain Challenge ===\n"
               << "Enter an actor, a movie they appeared in, then a different actor from that movie.\n"
@@ -302,7 +310,7 @@ void runLongestChainMode(const MovieGraph& graph)
     std::cout << "Final score: " << chainLength << " link(s).\n";
 }
 
-void runMainMenu(const MovieGraph& graph)
+void runMainMenu(MovieGraph& graph)
 {
     while (true)
     {

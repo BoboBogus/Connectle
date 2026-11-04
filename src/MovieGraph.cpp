@@ -51,3 +51,7 @@ size_t MovieGraph::actorCount() const {
 size_t MovieGraph::movieCount() const {
     return movies_.size();
 }
+
+std::vector<std::string> MovieGraph::allActors() const {
+    return std::vector<std::string>(actors_.begin(), actors_.end());
+}

@@ -5,10 +5,13 @@
 //ddfs() - dfs but starts from both ends so runs faster
 
 #pragma once
+#include "MovieGraph.h"
 #include <vector>
 #include <unordered_map>
 #include <string>
 using namespace std;
+
+namespace search{
 
 // what every search algorithm will return after being called
 struct searchResult{
@@ -19,11 +22,12 @@ struct searchResult{
     int moviesVisited = 0; // how many movies were visited
     double time = 0; // how long the search took
 
-    int moviesAway(); // movies in chain
-    int nodes(); // nodes visited
+    int moviesAway() const; // movies in chain
+    int nodes() const; // nodes visited
 };
 
 
 searchResult bfs(MovieGraph& graph, std::string start, std::string end); // breadth first search
 searchResult dfs(MovieGraph& graph, std::string start, std::string end); // depth first search
 searchResult ddfs(MovieGraph& graph, std::string start, std::string end); // double depth first
+}
