@@ -1,6 +1,6 @@
-# Movie Graph Search Engine
+# Connectle 
 
-A high-performance C++ application that parses movie datasets to construct a bipartite graph of actors and movies. The engine enables users to discover degrees of separation between actors using multiple search implementations (**BFS**, **DFS**, and **DDFS**).
+A C++ application that parses movie datasets to construct a bipartite graph of actors and movies. The engine enables users to discover degrees of separation between actors using multiple search implementations (**BFS**, **DFS**, and **DDFS**).
 
 ---
 
