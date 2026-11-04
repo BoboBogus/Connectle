@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 
+//loads dataset from CSV file into the MovieGraph
 bool DatasetLoader::loadDataset(const std::string& filename, MovieGraph& graph) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -21,7 +22,6 @@ bool DatasetLoader::loadDataset(const std::string& filename, MovieGraph& graph) 
 
     auto headerMap = CsvParser::parseHeader(headerLine);
 
-    // Verify required columns exist ("title" and "cast")
     if (headerMap.find("title") == headerMap.end() || headerMap.find("cast") == headerMap.end()) {
         std::cerr << "Error: CSV must contain 'title' and 'cast' columns." << std::endl;
         return false;
@@ -36,7 +36,7 @@ bool DatasetLoader::loadDataset(const std::string& filename, MovieGraph& graph) 
 
         std::vector<std::string> cols = CsvParser::parseLine(line);
         if (cols.size() <= static_cast<size_t>(std::max(titleIdx, castIdx))) {
-            continue; // Malformed row or missing columns
+            continue;
         }
 
         std::string movieTitle = text::trim(cols[titleIdx]);
@@ -46,8 +46,6 @@ bool DatasetLoader::loadDataset(const std::string& filename, MovieGraph& graph) 
         std::vector<std::string> actors = text::parseList(rawCast);
 
         for (const std::string& actor : actors) {
-            // Optional: format or store actor as needed
-            // e.g., actor name formatting if required by your search queries
             graph.addEdge(actor, movieTitle);
         }
     }

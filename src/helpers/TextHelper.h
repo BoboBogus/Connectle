@@ -15,16 +15,13 @@ std::string trim(const std::string& s);
 // Used to match CSV header names: "  Released_Year " -> "released_year".
 std::string normalize(const std::string& s);
 
-// FORMAT FOR THE DATASET: the form used to store and compare actor names.
 // Keeps only letters and digits, lowercased, and drops spaces and punctuation.
 // "Piper Perabo""piper  perabo""PiperPerabo" -> "piperperabo"
 std::string formatForDataset(const std::string& name);
 
-// FORMAT FOR DISPLAY: turns a squashed name from the file into something
 // readable. A space goes before a capital letter that follows a lowercase
 // letter, a digit, an accented character, or a '.', except inside "Mc":
 //   "PiperPerabo" -> "Piper Perabo"      "SamuelL.Jackson" -> "Samuel L. Jackson"
-//   "EwanMcGregor" -> "Ewan McGregor"    "LeonardoDiCaprio" -> "Leonardo Di Caprio"
 std::string formatForDisplay(const std::string& name);
 
 //   ['TomHanks', "VincentD'Onofrio"]  ->  {TomHanks, VincentD'Onofrio}
