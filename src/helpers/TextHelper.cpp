@@ -1,3 +1,4 @@
+//made By Jayden Valera
 #include "TextHelper.h"
 
 #include <cctype>

@@ -1,3 +1,4 @@
+//Collaborated by Angel Reyes and Jayden Valera Alexander Schunko
 #include "MovieGraph.h"
 
 const std::vector<std::string> MovieGraph::emptyList = {};

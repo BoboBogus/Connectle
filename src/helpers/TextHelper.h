@@ -1,3 +1,4 @@
+//made By Jayden Valera
 #pragma once
 // Small string helpers shared by the parser and the graph.
 // Nothing here knows about movies, actors, or CSV.
