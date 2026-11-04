@@ -66,12 +66,10 @@ Connectle/
 - **Build System:** CMake 3.12+
 
 ### Run Prebuilt
-  **Running the Prebuilt main.exe**
-	```bash
-	.\build\Release\main.exe
-	```
-
-### Quick Start
+**Running the Prebuilt main.exe**
+```bash
+.\build\Release\main.exe
+```
 
 1. **Create and enter the build directory:**
    ```bash
