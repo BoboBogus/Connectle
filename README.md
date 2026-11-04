@@ -66,6 +66,7 @@ Connectle/
 - **Build System:** CMake 3.12+
 
 ### Run Prebuilt
+  **Running the Prebuilt main.exe**
 	```bash
 	.\build\Release\main.exe
 	```
